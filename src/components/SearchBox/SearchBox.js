@@ -31,7 +31,6 @@ function SearchBox({ refine }) {
   );
 }
 
-// const test = () => <input />;
 const CustomSearchBox = connectSearchBox(SearchBox);
 
 export default CustomSearchBox;

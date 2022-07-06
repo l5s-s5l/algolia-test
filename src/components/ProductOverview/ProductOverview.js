@@ -1,31 +1,32 @@
 /* eslint-disable react/prop-types */
 import { Hits, connectStats } from 'react-instantsearch-dom';
+import React, { useEffect, useState } from 'react';
 
 import CustomPagination from '../Pagination/PaginationContainer';
-import React from 'react';
 import SearchHeading from '../SearchHeading/SearchHeading';
 
 function ProductOverviewWithAlgolia(props) {
   const { nbHits } = props;
+  const [mockSearchPage, setMockSearchPage] = useState(false);
 
-  return (
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('q');
+    if (query) setMockSearchPage(true);
+  }, []);
+
+  return mockSearchPage ? (
     <>
-      {/* <Configure page={4} /> */}
       <CustomPagination numberOfHits={nbHits} />
       <SearchHeading />
       <div className="search-panel">
-        {/* <div className="search-panel__filters">
-              <Configure facets={['*']} maxValuesPerFacet={20} />
-              <DynamicWidgets fallbackWidget={RefinementList}></DynamicWidgets>
-            </div> */}
-
         <div className="search-panel__results">
           <Hits hitComponent={Hit} />
           <CustomPagination numberOfHits={nbHits} />
         </div>
       </div>
     </>
-  );
+  ) : null;
 }
 
 function Hit(props) {

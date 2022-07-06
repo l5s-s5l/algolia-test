@@ -36,13 +36,7 @@ const App = props => {
         searchClient={searchClient.current}
         indexName={indexName}
         searchState={algoliaSearchState}
-        onSearchStateChange={searchState => {
-          if (
-            Object.keys(searchState).length &&
-            JSON.stringify(searchState) !== JSON.stringify(algoliaSearchState)
-          )
-            setAlgoliaSearchState(searchState);
-        }}
+        onSearchStateChange={searchState => setAlgoliaSearchState(searchState)}
       >
         {/* exposes the queryId that is used for algoliaInsights */}
         <Configure clickAnalytics />
