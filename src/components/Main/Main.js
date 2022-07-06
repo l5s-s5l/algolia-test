@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { AppDataProvider } from '../../context/appData/AppDataProvider';
 import algoliaInsights from 'search-insights';
 import algoliasearch from 'algoliasearch';
+import { hot } from 'react-hot-loader/root';
 
 const Main = props => {
   const { algolia } = props.appData;
@@ -44,4 +45,4 @@ const Main = props => {
   );
 };
 
-export default Main;
+export default hot(Main);
