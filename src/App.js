@@ -1,7 +1,7 @@
 import './App.css';
 
 import { Configure, InstantSearch } from 'react-instantsearch-dom';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { AppDataProvider } from './context/appData/AppDataProvider';
 import algoliaInsights from 'search-insights';
@@ -12,7 +12,8 @@ const App = props => {
   const { algolia } = props.appData;
   const [algoliaSearchState, setAlgoliaSearchState] = useState({});
   const [algoliaConfig, setAlgoliaConfig] = useState();
-  const searchClient = algolia && algoliasearch(algolia.appId, algolia.APIKey);
+  const searchClient =
+    algolia && useRef(algoliasearch(algolia.appId, algolia.APIKey));
   const indexName =
     algolia && algolia.environment
       ? `${algolia.environment}_plieger_nl`
@@ -22,13 +23,17 @@ const App = props => {
     const url = window.location.href;
 
     if (url.includes('search/') || url.includes('/c/'))
-      setAlgoliaConfig({ indexName, searchClient, algoliaInsights });
+      setAlgoliaConfig({
+        indexName,
+        searchClient: searchClient.current,
+        algoliaInsights,
+      });
   }, []);
 
   return (
     <AppDataProvider appData={props.appData} algoliaConfig={algoliaConfig}>
       <InstantSearch
-        searchClient={searchClient}
+        searchClient={searchClient.current}
         indexName={indexName}
         searchState={algoliaSearchState}
         onSearchStateChange={searchState => {
