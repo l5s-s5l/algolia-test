@@ -1,33 +1,50 @@
 import './App.css';
 
-import React, { useEffect } from 'react';
+import { Configure, InstantSearch } from 'react-instantsearch-dom';
+import React, { useEffect, useState } from 'react';
 
-import placeComponents from './place-components';
+import { AppDataProvider } from './context/appData/AppDataProvider';
+import algoliaInsights from 'search-insights';
+import algoliasearch from 'algoliasearch';
+import { hot } from 'react-hot-loader/root';
 
-// import { useLocalStorage } from './helpers/useLocalStorage';
+const App = props => {
+  const { algolia } = props.appData;
+  const [algoliaSearchState, setAlgoliaSearchState] = useState({});
+  const [algoliaConfig, setAlgoliaConfig] = useState();
+  const searchClient = algolia && algoliasearch(algolia.appId, algolia.APIKey);
+  const indexName =
+    algolia && algolia.environment
+      ? `${algolia.environment}_plieger_nl`
+      : 'p1_plieger_nl';
 
-function App() {
   useEffect(() => {
-    placeComponents();
+    const url = window.location.href;
+
+    if (url.includes('search/') || url.includes('/c/'))
+      setAlgoliaConfig({ indexName, searchClient, algoliaInsights });
   }, []);
 
   return (
-    <div className="container">
-      <div
-        id="PliegerApp"
-        data-react-json={`{
-          "algolia":	{
-            "APIKey": "135c954e3af430b567540d64b62f2734",
-            "appId": "BV3K998NIV",
-            "environment": "laurens"
-          }
-			  }`}
-      ></div>
-      <div data-react-entry="CustomSearchBox"> </div>
-      <div data-react-entry="CurrentRefinements"> </div>
-      <div data-react-entry="ProductOverview"> </div>
-    </div>
+    <AppDataProvider appData={props.appData} algoliaConfig={algoliaConfig}>
+      <InstantSearch
+        searchClient={searchClient}
+        indexName={indexName}
+        searchState={algoliaSearchState}
+        onSearchStateChange={searchState => {
+          if (
+            Object.keys(searchState).length &&
+            JSON.stringify(searchState) !== JSON.stringify(algoliaSearchState)
+          )
+            setAlgoliaSearchState(searchState);
+        }}
+      >
+        {/* exposes the queryId that is used for algoliaInsights */}
+        <Configure clickAnalytics />
+        <div className="container">{props.children}</div>
+      </InstantSearch>
+    </AppDataProvider>
   );
-}
+};
 
-export default App;
+export default hot(App);

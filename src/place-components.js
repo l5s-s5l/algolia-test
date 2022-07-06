@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
 
-import Main from './components/Main/Main';
+import App from './App';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -58,7 +58,7 @@ const placeComponents = async () => {
   const appComponent = document.getElementById('PliegerApp');
   const appData = getDataFromTag(appComponent);
 
-  ReactDOM.render(<Main appData={appData}>{children}</Main>, appComponent);
+  ReactDOM.render(<App appData={appData}>{children}</App>, appComponent);
 };
 
 export default placeComponents;

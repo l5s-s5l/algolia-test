@@ -75,3 +75,7 @@ em {
 .c-pagination__list li {
   margin-right: 5px;
 }
+
+img {
+  width: 100%;
+}
